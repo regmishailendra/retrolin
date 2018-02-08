@@ -5,10 +5,13 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
+import android.widget.ImageView
 import android.widget.TextView
+import com.bumptech.glide.Glide
 import com.my.retrolin.R
 import com.my.retrolin.RetrofitClient.DealerClient
 import com.my.retrolin.adapters.PixabayAdapter
+import com.my.retrolin.models.BookObject
 import com.my.retrolin.models.Dealer
 import com.my.retrolin.models.JhanMathiko
 import kotlinx.android.synthetic.main.activity_main.*
@@ -21,72 +24,113 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class MainActivity : AppCompatActivity() {
     lateinit var recyclerView: RecyclerView
-
     lateinit var textView: TextView
-
-//
+    lateinit var imageView:ImageView
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)    //which has setContent view question
-        recyclerView = recyclerview
-        recyclerView.layoutManager = LinearLayoutManager(MainActivity@ this)
-
-     //   textView = textview
 
 
-        //go retrofit
-        // steps  build create call enque
+//        imageView=imageview
+//   // Glide.with(MainActivity@this).asGif().load(R.raw.gifarrow).into(imageView)
+//        Glide.with(this).asGif().load(R.raw.gifarrow).into(imageView)
+//        recyclerView = recyclerview
+//        recyclerView.layoutManager = LinearLayoutManager(MainActivity@this)
+//     //   textView = textview
+//        //go retrofit
+//        // steps  build create call enque
+////https://api.myjson.com/bins/u65g9
+//        var builder: Retrofit.Builder = Retrofit.Builder()
+//              //  .baseUrl("http://nepalgas.bidheellc.com/")
+//                .baseUrl("http://nepalgas.bidheellc.com/")
+//                .addConverterFactory(GsonConverterFactory.create())
+//        var retrofit: Retrofit = builder.build()
+//        var creater: DealerClient = retrofit.create(DealerClient::class.java)
+//        var caller: Call<JhanMathiko> = creater.getDealerList()
+//        caller.enqueue(object : Callback<JhanMathiko> {
+//            override fun onResponse(call: Call<JhanMathiko>?, response: Response<JhanMathiko>?) {
+//                Log.v("datatest", "its a success congrats")
+//                var jhanmathiko:JhanMathiko? = response?.body()
+//                recyclerView.adapter=  PixabayAdapter(jhanmathiko?.data?.data)
+//            }
+//            override fun onFailure(call: Call<JhanMathiko>?, t: Throwable?) {
+//                Log.v("datatest", "you failed this time " + t.toString())
+//            }
+//        })
 
-//https://api.myjson.com/bins/u65g9
 
 
-        var builder: Retrofit.Builder = Retrofit.Builder()
-              //  .baseUrl("http://nepalgas.bidheellc.com/")
-                .baseUrl("http://nepalgas.bidheellc.com/")
+
+        //go retrofit build create call enque
+
+
+        val postRetrofitBuilder : Retrofit.Builder=
+        Retrofit.Builder().baseUrl("http://nepalgas.bidheellc.com/")
                 .addConverterFactory(GsonConverterFactory.create())
 
+         val postRetrofit: Retrofit = postRetrofitBuilder.build()
 
-        var retrofit: Retrofit = builder.build()
-
-        var creater: DealerClient = retrofit.create(DealerClient::class.java)
-
-        var caller: Call<JhanMathiko> = creater.getDealerList()
-
-        caller.enqueue(object : Callback<JhanMathiko> {
-            override fun onResponse(call: Call<JhanMathiko>?, response: Response<JhanMathiko>?) {
+      val postCreater : DealerClient = postRetrofit.create(DealerClient::class.java)
 
 
-                Log.v("datatest", "its a success congrats")
+        var tempPosingObject: BookObject = BookObject(2,"upload post","retrofit@android.com","123568985","Bidhee LLC")
 
-
-                var jhanmathiko:JhanMathiko? = response?.body()
-
-
-                recyclerView.adapter=  PixabayAdapter(jhanmathiko?.data?.data)
+        val postCaller : Call<ResponseBody> = postCreater.postData(tempPosingObject)
 
 
 
+   postCaller.enqueue( object : Callback<ResponseBody>{
+       override fun onResponse(call: Call<ResponseBody>?, response: Response<ResponseBody>?) {
+
+           Log.v("postcheck",""+ response?.body()?.string())
+
+
+       }
+
+       override fun onFailure(call: Call<ResponseBody>?, t: Throwable?) {
+
+       }
+
+
+   })
 
 
 
 
-            }
-
-            override fun onFailure(call: Call<JhanMathiko>?, t: Throwable?) {
-                Log.v("datatest", "you failed this time " + t.toString())
 
 
-            }
 
 
-        })
+
+
+
+
+
+
+
 
 
     }
 
 
-}
+
+
+
+
+
+
+
+
+
+
+
+
+    }
+
+
+
 
 
 
